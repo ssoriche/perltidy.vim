@@ -41,8 +41,7 @@ endif
 command -range=% -nargs=* PerlTidy <line1>,<line2> call DoPerlTidy()
 
 function DoPerlTidy() range
-  let l = line(".")
-  let c = col(".")
+  let save_cursor = getcurpos()
   let s:perltidy_config = ''
   let perl_line = ''
   if g:perltidy_config ==# ''
@@ -74,6 +73,7 @@ function DoPerlTidy() range
     endif
     call setline(a:firstline, results)
   endif
+  call setpos('.', save_cursor)
 
 endfunction
 
