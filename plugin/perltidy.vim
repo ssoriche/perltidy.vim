@@ -59,7 +59,20 @@ function DoPerlTidy() range
     call cursor(l, c)
   else
     let perl_line = getline(a:firstline, a:lastline)
-    call setline(a:firstline, split(system(g:perltidy . " -opt " . s:perltidy_config, perl_line),'\v\n'))
+    let results = split(system(g:perltidy . " -opt " . s:perltidy_config, perl_line),'\v\n')
+    if len(results) > a:lastline - a:firstline
+      let i = 0
+      let needed = len(results) - (a:lastline - a:firstline)
+      while i < needed - 1
+        call append(a:firstline, "")
+        let i = i + 1
+      endwhile
+    endif
+    if len(results) < a:lastline - a:firstline
+      let needed = (a:lastline - a:firstline) - len(results)
+      execute ":" . a:firstline ."," . (a:firstline + needed) . "delete _"
+    endif
+    call setline(a:firstline, results)
   endif
 
 endfunction
