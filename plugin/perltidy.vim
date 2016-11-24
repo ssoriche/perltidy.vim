@@ -59,8 +59,7 @@ function DoPerlTidy() range
     call cursor(l, c)
   else
     let perl_line = getline(a:firstline, a:lastline)
-    echom s:perltidy_config
-    call setline(a:firstline - 0, split(system(g:perltidy . " -opt " . s:perltidy_config, perl_line),'\v\n'))
+    call setline(a:firstline, split(system(g:perltidy . " -opt " . s:perltidy_config, perl_line),'\v\n'))
   endif
 
 endfunction
