@@ -53,26 +53,21 @@ function DoPerlTidy() range
     let s:perltidy_config = '-pro=' . g:perltidy_config
   endif
 
-  if a:firstline == a:lastline
-    execute "!" . g:perltidy . " " . s:perltidy_config . " " . bufname("%")
-    call cursor(l, c)
-  else
-    let perl_line = getline(a:firstline, a:lastline)
-    let results = split(system(g:perltidy . " -opt " . s:perltidy_config, perl_line),'\v\n')
-    if len(results) > a:lastline - a:firstline
-      let i = 0
-      let needed = len(results) - (a:lastline - a:firstline)
-      while i < needed - 1
-        call append(a:firstline, "")
-        let i = i + 1
-      endwhile
-    endif
-    if len(results) < a:lastline - a:firstline
-      let needed = (a:lastline - a:firstline) - len(results)
-      execute ":" . a:firstline ."," . (a:firstline + needed) . "delete _"
-    endif
-    call setline(a:firstline, results)
+  let perl_line = getline(a:firstline, a:lastline)
+  let results = split(system(g:perltidy . " -opt " . s:perltidy_config, perl_line),'\v\n')
+  if len(results) > a:lastline - a:firstline
+    let i = 0
+    let needed = len(results) - (a:lastline - a:firstline)
+    while i < needed - 1
+      call append(a:firstline, "")
+      let i = i + 1
+    endwhile
   endif
+  if len(results) < a:lastline - a:firstline
+    let needed = (a:lastline - a:firstline) - len(results)
+    execute ":" . a:firstline ."," . (a:firstline + needed) . "delete _"
+  endif
+  call setline(a:firstline, results)
   call setpos('.', save_cursor)
 
 endfunction
